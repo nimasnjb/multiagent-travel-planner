@@ -1,5 +1,5 @@
 # Multi-Agent Travel Planner — Project Spec (LangGraph v1)
-here we go!
+here we go! And this is one more commit!
 
 This file is the source of truth for ARCHITECTURE and RULES. It is read by the
 AI coding assistant every session. It does NOT contain status tracking (that

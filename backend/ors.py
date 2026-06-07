@@ -151,3 +151,21 @@ if __name__ == "__main__":
     print(f"Kyoto, food -> {len(venues)} venue(s):")
     for v in venues:
         print(f"  {v['id']:<24} {v['name']:<35} ({v['lat']:.4f}, {v['lng']:.4f})  category={v['category']!r}  cost_band={v['cost_band']!r}")
+
+    # Matrix smoke test: feed 4 real Kyoto landmarks through the real ORS
+    # matrix endpoint and the real OR-Tools TSPTW solve (logistics node uses
+    # this module's `ors` singleton, so it hits the network here too).
+    from backend.nodes.logistics import logistics
+    from backend.schemas import Day, Plan, Stop
+
+    kyoto_day = Day(day=1, stops=[
+        Stop(id="p1", name="Fushimi Inari Taisha", lat=34.9671, lng=135.7727),
+        Stop(id="p4", name="Kinkaku-ji", lat=35.0394, lng=135.7292),
+        Stop(id="p2", name="Nishiki Market", lat=35.0050, lng=135.7649),
+        Stop(id="p5", name="Gion District", lat=35.0037, lng=135.7752),
+    ])
+    out = logistics(Plan(request="smoke test", days=[kyoto_day]))
+    print("\nKyoto day-1 route (ORS matrix + OR-Tools TSP-with-time-windows):")
+    for stop in out["days"][0].stops:
+        leg = f"{stop.leg_to_next.minutes:5.1f} min -> next" if stop.leg_to_next else "        (end of day)"
+        print(f"  {stop.arrival}–{stop.depart}  {stop.name:<22} {leg}")

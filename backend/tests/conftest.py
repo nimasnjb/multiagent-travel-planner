@@ -62,3 +62,36 @@ class FakeORS:
 @pytest.fixture
 def fake_ors() -> FakeORS:
     return FakeORS()
+
+
+def wire_fake_graph(monkeypatch, *, preferences_response: str,
+                    researcher_responses: list[str] = (),
+                    budget_responses: list[str] = (),
+                    writer_responses: list[str] = (),
+                    fake_ors: FakeORS | None = None) -> FakeORS:
+    """Monkeypatch every node's module-level llm/ors singleton with fakes, so
+    a full graph.invoke() never touches the network — for graph-level (e2e)
+    tests that exercise more than one node per run.
+
+    Each `*_responses` list feeds that node's FakeLLM in call order; leave a
+    node's list empty when the scenario never reaches it (e.g. the
+    clarification branch never runs past `preferences`, so its FakeLLM is
+    simply never asked to pop a response).
+
+    Returns the FakeORS in use, so callers can further tailor `search_pois`
+    for their scenario before invoking the graph.
+    """
+    import backend.nodes.budget as budget_mod
+    import backend.nodes.logistics as logistics_mod
+    import backend.nodes.preferences as preferences_mod
+    import backend.nodes.researcher as researcher_mod
+    import backend.nodes.writer as writer_mod
+
+    fake_ors = fake_ors or FakeORS()
+    monkeypatch.setattr(preferences_mod, "llm", FakeLLM([preferences_response]))
+    monkeypatch.setattr(researcher_mod, "llm", FakeLLM(list(researcher_responses)))
+    monkeypatch.setattr(researcher_mod, "ors", fake_ors)
+    monkeypatch.setattr(budget_mod, "llm", FakeLLM(list(budget_responses)))
+    monkeypatch.setattr(logistics_mod, "ors", fake_ors)
+    monkeypatch.setattr(writer_mod, "llm", FakeLLM(list(writer_responses)))
+    return fake_ors

@@ -2,4 +2,5 @@ __pycache__/
 .env
 *.pyc
 .venv/
+SPEC.md
 PLAN.md

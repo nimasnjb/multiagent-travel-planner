@@ -2,12 +2,15 @@
 Render's health check."""
 from typing import Optional
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from backend.graph import build_graph
 from backend.schemas import Plan
+
+load_dotenv()  # populate OPENAI_API_KEY / ORS_API_KEY from .env before any node runs
 
 app = FastAPI()
 

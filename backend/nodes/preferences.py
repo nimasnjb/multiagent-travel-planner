@@ -4,6 +4,21 @@ import time
 from backend.llm import llm
 from backend.schemas import Plan, Preferences
 
+# Only destination/clarification_needed are nullable in Preferences. The model
+# nonetheless sometimes returns null for the other fields when it has no info
+# (typically alongside clarification_needed) — coerce those back to the
+# schema's own defaults rather than letting validation crash the node.
+_NON_NULLABLE_DEFAULTS = {
+    "trip_length_days": 1,
+    "party_size": 1,
+    "pace": "",
+    "interests": [],
+    "budget_total": 0.0,
+    "currency": "USD",
+    "must_sees": [],
+    "dietary": [],
+}
+
 _SYSTEM = """You are a travel-planning assistant. Parse the user's trip request into JSON.
 Return ONLY a JSON object with these fields:
   destination (string or null),
@@ -27,6 +42,9 @@ def preferences(state: Plan) -> dict:
     t0 = time.monotonic()
     raw = llm.complete_json(_SYSTEM, state.request)
     data = json.loads(raw)
+    for field, default in _NON_NULLABLE_DEFAULTS.items():
+        if data.get(field) is None:
+            data[field] = default
     prefs = Preferences(**data)
     ms = int((time.monotonic() - t0) * 1000)
     log_entry = {"agent": "preferences", "status": "done",

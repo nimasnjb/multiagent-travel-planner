@@ -4,3 +4,5 @@ __pycache__/
 .venv/
 SPEC.md
 PLAN.md
+node_modules/
+dist/

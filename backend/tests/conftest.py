@@ -57,6 +57,12 @@ class FakeORS:
         n = len(coords)
         return [[0 if i == j else 10 + abs(i - j) * 5
                  for j in range(n)] for i in range(n)]
+    def directions(self, start, end):
+        # A simple multi-point road-following path: start, midpoint, end,
+        # in ORS's [lng, lat] order.
+        (s_lat, s_lng), (e_lat, e_lng) = start, end
+        mid = [(s_lng + e_lng) / 2, (s_lat + e_lat) / 2]
+        return [[s_lng, s_lat], mid, [e_lng, e_lat]]
 
 
 @pytest.fixture

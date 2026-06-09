@@ -118,6 +118,29 @@ class _ORS:
             })
         return venues
 
+    def directions(self, start: tuple[float, float], end: tuple[float, float]) -> list[list[float]]:
+        """Road-following route geometry between two (lat, lng) points.
+
+        Returns the coordinates exactly as ORS gives them: a list of
+        [lng, lat] pairs (GeoJSON order), untransformed — see schemas.Leg.geometry.
+        Returns [] on any request/parse failure so one ORS hiccup doesn't
+        sink the whole plan; the caller treats an empty result as "no geometry".
+        """
+        try:
+            resp = requests.post(
+                f"{_BASE_URL}/v2/directions/{_WALKING_PROFILE}/geojson",
+                json={"coordinates": [[start[1], start[0]], [end[1], end[0]]]},
+                headers=self._headers(),
+                timeout=15,
+            )
+            resp.raise_for_status()
+            features = resp.json()["features"]
+            if not features:
+                return []
+            return features[0]["geometry"]["coordinates"]
+        except (requests.RequestException, KeyError, IndexError, ValueError):
+            return []
+
     def matrix(self, coords: list[tuple[float, float]]) -> list[list[float]]:
         """N x N travel-time matrix in minutes between (lat, lng) coords."""
         resp = requests.post(

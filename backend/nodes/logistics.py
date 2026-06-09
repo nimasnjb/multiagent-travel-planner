@@ -101,7 +101,13 @@ def _order_day(day: Day, matrix: list[list[float]]) -> Day:
         leg = None
         if position < len(order) - 1:
             next_idx = order[position + 1]
-            leg = Leg(minutes=matrix[stop_idx][next_idx])
+            from_stop, to_stop = stops[stop_idx], stops[next_idx]
+            try:
+                geometry = ors.directions((from_stop.lat, from_stop.lng),
+                                           (to_stop.lat, to_stop.lng))
+            except Exception:
+                geometry = None
+            leg = Leg(minutes=matrix[stop_idx][next_idx], geometry=geometry or None)
         ordered.append(stops[stop_idx].model_copy(update={
             "arrival": _format_minutes(arrival_min),
             "depart": _format_minutes(depart_min),

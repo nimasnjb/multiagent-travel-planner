@@ -29,6 +29,9 @@ class Candidate(BaseModel):
 
 class Leg(BaseModel):
     minutes: float
+    # ORS-native order: [lng, lat]. Frontend swaps to [lat, lng] at render time;
+    # the backend stores ORS output untransformed.
+    geometry: Optional[list[list[float]]] = None
 
 
 class Stop(BaseModel):

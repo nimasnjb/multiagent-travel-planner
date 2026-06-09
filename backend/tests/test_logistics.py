@@ -1,7 +1,7 @@
 """Logistics node. The OR-Tools solve — ZERO LLM. Highest-risk piece, so the
 tightest tests. Build/verify this against these before touching real ORS."""
 from backend.nodes.logistics import logistics
-from backend.schemas import Plan, Day, Stop
+from backend.schemas import Leg, Plan, Day, Stop
 
 
 def _day_with_stops():
@@ -35,3 +35,9 @@ def test_legs_present_between_consecutive_stops(base_preferences, fake_ors, monk
     stops = out["days"][0].stops
     for s in stops[:-1]:
         assert s.leg_to_next is not None and s.leg_to_next.minutes >= 0
+
+
+def test_leg_geometry_is_optional_and_validates():
+    assert Leg(minutes=5.0).geometry is None
+    leg = Leg(minutes=5.0, geometry=[[135.77, 34.96], [135.76, 35.00]])
+    assert leg.geometry == [[135.77, 34.96], [135.76, 35.00]]

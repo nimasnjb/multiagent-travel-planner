@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TripForm from "./components/TripForm.jsx";
 import AgentGraph from "./components/AgentGraph.jsx";
+import ItineraryMap from "./components/ItineraryMap.jsx";
 
 export default function App() {
   const [plan, setPlan] = useState(null);
@@ -14,6 +15,7 @@ export default function App() {
         }}
       />
       <AgentGraph plan={plan} />
+      <ItineraryMap plan={plan} />
     </div>
   );
 }

@@ -23,9 +23,9 @@ export default function TripForm({ onPlan }) {
       const question = plan.preferences?.clarification_needed ?? null;
       setPriorState(question ? plan : null);
       setClarification(question);
+      onPlan(plan);
       if (!question) {
         setAnswer("");
-        onPlan(plan);
       }
     } catch (err) {
       setError(err.message ?? String(err));

@@ -1,13 +1,19 @@
+import { useState } from "react";
 import TripForm from "./components/TripForm.jsx";
+import AgentGraph from "./components/AgentGraph.jsx";
 
-// Throwaway mount for exercising TripForm in the browser — replaced by the real App later.
 export default function App() {
+  const [plan, setPlan] = useState(null);
+
   return (
-    <TripForm
-      onPlan={(plan) => {
-        console.log("PLAN:", plan);
-        window.__lastPlan = plan;
-      }}
-    />
+    <div>
+      <TripForm
+        onPlan={(p) => {
+          setPlan(p);
+          window.__lastPlan = p;
+        }}
+      />
+      <AgentGraph plan={plan} />
+    </div>
   );
 }

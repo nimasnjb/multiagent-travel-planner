@@ -34,16 +34,33 @@ export default function ItineraryMap({ plan }) {
   const days = plan?.days ?? [];
   const hasStops = days.some((d) => d.stops?.length > 0);
 
-  // Flat list of [lat, lng] for bounds fitting.
+  // Flat list of [lat, lng] for bounds fitting — includes leg geometry so
+  // the fit covers the actual street route, not just the stop pins.
   const allPositions = useMemo(
-    () => days.flatMap((d) => (d.stops ?? []).map((s) => [s.lat, s.lng])),
+    () => days.flatMap((d) => (d.stops ?? []).flatMap((s) => {
+      const points = [[s.lat, s.lng]];
+      if (s.leg_to_next?.geometry?.length) {
+        points.push(...s.leg_to_next.geometry.map(([lng, lat]) => [lat, lng]));
+      }
+      return points;
+    })),
     [days],
   );
 
   if (!hasStops) {
     return (
-      <div style={{ padding: "16px", color: "#9ca3af", textAlign: "center" }}>
-        Map will appear here once your itinerary is ready.
+      <div
+        style={{
+          padding: "32px 16px",
+          color: "var(--color-text-muted)",
+          textAlign: "center",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "var(--shadow-card)",
+          fontFamily: "var(--font-body)",
+        }}
+      >
+        We map your trip right here!
       </div>
     );
   }
@@ -53,12 +70,20 @@ export default function ItineraryMap({ plan }) {
   const defaultCenter = [firstStop.lat, firstStop.lng];
 
   return (
-    <MapContainer
-      center={defaultCenter}
-      zoom={13}
-      style={{ height: 420, width: "100%" }}
-      scrollWheelZoom={true}
+    <div
+      style={{
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-lg)",
+        boxShadow: "var(--shadow-card)",
+        padding: 12,
+      }}
     >
+      <MapContainer
+        center={defaultCenter}
+        zoom={13}
+        style={{ height: 420, width: "100%", borderRadius: "var(--radius-md)" }}
+        scrollWheelZoom={true}
+      >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -69,7 +94,6 @@ export default function ItineraryMap({ plan }) {
       {days.map((day, di) => {
         const stops = day.stops ?? [];
         const color = dayColor(di);
-        const polyline = stops.map((s) => [s.lat, s.lng]);
 
         return (
           <span key={day.day}>
@@ -95,12 +119,29 @@ export default function ItineraryMap({ plan }) {
               </Marker>
             ))}
 
-            {polyline.length > 1 && (
-              <Polyline positions={polyline} color={color} weight={3} opacity={0.8} />
-            )}
+            {stops.slice(0, -1).map((stop, i) => {
+              const next = stops[i + 1];
+              const geometry = stop.leg_to_next?.geometry;
+              // ORS returns [lng, lat]; Leaflet wants [lat, lng]. Fall back to
+              // a straight segment between the two stops if geometry is missing.
+              const segment = geometry?.length
+                ? geometry.map(([lng, lat]) => [lat, lng])
+                : [[stop.lat, stop.lng], [next.lat, next.lng]];
+
+              return (
+                <Polyline
+                  key={`${stop.id}-leg`}
+                  positions={segment}
+                  color={color}
+                  weight={3}
+                  opacity={0.8}
+                />
+              );
+            })}
           </span>
         );
       })}
-    </MapContainer>
+      </MapContainer>
+    </div>
   );
 }

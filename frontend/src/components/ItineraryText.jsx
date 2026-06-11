@@ -4,14 +4,22 @@ const styles = {
   container: {
     maxWidth: 720,
     margin: "0 auto",
-    padding: "16px 24px",
-    fontFamily: "sans-serif",
+    padding: "24px 28px",
     lineHeight: 1.6,
+    background: "var(--color-surface)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-card)",
+    fontFamily: "var(--font-body)",
+    color: "var(--color-text)",
   },
   empty: {
-    padding: "16px 24px",
-    color: "#9ca3af",
+    padding: "32px 16px",
+    color: "var(--color-text-muted)",
     textAlign: "center",
+    background: "var(--color-surface)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-card)",
+    fontFamily: "var(--font-body)",
   },
 };
 
@@ -21,13 +29,13 @@ export default function ItineraryText({ plan }) {
   if (!narrative) {
     return (
       <div style={styles.empty}>
-        Itinerary narrative will appear here once your trip is planned.
+        Read the detailed itinerary and instructions.
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
+    <div className="itinerary-text" style={styles.container}>
       <ReactMarkdown>{narrative}</ReactMarkdown>
     </div>
   );

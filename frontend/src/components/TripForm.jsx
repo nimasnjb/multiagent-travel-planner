@@ -7,7 +7,7 @@ import { callPlan } from "../api";
  * (asking the follow-up question, re-calling with prior_state) but does
  * not look inside the resolved Plan beyond preferences.clarification_needed.
  */
-export default function TripForm({ onPlan }) {
+export default function TripForm({ onPlan, onLoadingChange }) {
   const [request, setRequest] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,7 @@ export default function TripForm({ onPlan }) {
 
   async function runPlan(text, prior) {
     setLoading(true);
+    onLoadingChange?.(true);
     setError(null);
     try {
       const plan = await callPlan(text, prior);
@@ -31,6 +32,7 @@ export default function TripForm({ onPlan }) {
       setError(err.message ?? String(err));
     } finally {
       setLoading(false);
+      onLoadingChange?.(false);
     }
   }
 
@@ -53,7 +55,7 @@ export default function TripForm({ onPlan }) {
           type="text"
           value={request}
           onChange={(event) => setRequest(event.target.value)}
-          placeholder="Describe your trip…"
+          placeholder="Describe your trip (Barcelona, paella, 3 days, 500 euros)"
           disabled={loading}
         />
         <button type="submit" disabled={loading}>
@@ -77,7 +79,6 @@ export default function TripForm({ onPlan }) {
         </form>
       )}
 
-      {loading && <p className="trip-form-status">Planning…</p>}
       {error && <p className="trip-form-error" role="alert">{error}</p>}
     </div>
   );

@@ -8,7 +8,6 @@ Describe a trip in plain language and a five-agent LangGraph pipeline turns it i
 
 ![Demo: a Kyoto trip request animating through the agent pipeline, drawing a route on the map, and producing a narrative itinerary](docs/demo.gif)
 
-*(Drop the recorded gif at `docs/demo.gif` — Kyoto request → agent arc animating → map drawing street routes → narrative text panel.)*
 
 ## Architecture
 

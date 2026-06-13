@@ -6,8 +6,9 @@ Describe a trip in plain language and a five-agent LangGraph pipeline turns it i
 
 > The API runs on Render's free tier and spins down when idle — the first request after a while can take 30–60s to wake up.
 
-![Demo: a Kyoto trip request animating through the agent pipeline, drawing a route on the map, and producing a narrative itinerary](docs/demo.gif)
+![Multiagent Travel Planner home page, showing the trip request form](docs/screenshot.png)
 
+![Demo: a Kyoto trip request animating through the agent pipeline, drawing a route on the map, and producing a narrative itinerary](docs/demo.gif)
 
 ## Architecture
 

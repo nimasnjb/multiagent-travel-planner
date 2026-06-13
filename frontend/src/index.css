@@ -1,31 +1,29 @@
-/* Warm travel-magazine design tokens — the single source of truth for color
-   and type across the app. Components reference these via var(...). */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 :root {
-  /* Palette: sunset / terracotta, sandy backgrounds, warm deep-brown text */
-  --color-bg: #fcefe1;
-  --color-bg-deep: #f7ddc3;
-  --color-surface: #fffbf5;
-  --color-text: #3b2a20;
-  --color-text-muted: #9c8576;
-  --color-accent: #ff6b4a;
-  --color-accent-hover: #ff8568;
-  --color-accent-active: #e2532e;
-  --color-accent-soft: #ffe0d1;
-  --color-idle: #eae0d2;
-  --color-idle-border: #d9c9b6;
-  --color-border: #f0dfcb;
+  /* Palette: bright clean SaaS, sunny data-cloud travel planner */
+  --color-bg: #f7fbff;
+  --color-bg-deep: #eaf2ff;
+  --color-surface: #ffffff;
+  --color-text: #172033;
+  --color-text-muted: #6b7488;
+  --color-accent: #ffb703;
+  --color-accent-hover: #ffc83d;
+  --color-accent-active: #fb8500;
+  --color-accent-soft: rgba(255, 183, 3, 0.2);
+  --color-idle: #e6ebf4;
+  --color-idle-border: #cfd8e8;
+  --color-border: #dce5f5;
 
-  --shadow-card: 0 10px 30px rgba(120, 72, 40, 0.1);
+  --shadow-card: 0 18px 55px rgba(36, 70, 120, 0.13);
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
   --radius-pill: 999px;
 
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -40,7 +38,10 @@ body,
 }
 
 body {
-  background: var(--color-bg);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 183, 3, 0.28), transparent 28%),
+    radial-gradient(circle at 86% 8%, rgba(32, 151, 255, 0.18), transparent 32%),
+    linear-gradient(180deg, var(--color-bg), var(--color-bg-deep));
   color: var(--color-text);
   font-family: var(--font-body);
 }
@@ -53,9 +54,10 @@ body {
   gap: 14px;
   text-align: left;
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: 20px 24px;
+  padding: 22px 26px;
 }
 
 .trip-form form {
@@ -66,26 +68,30 @@ body {
 
 .trip-form p {
   margin: 0;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   color: var(--color-text);
+  letter-spacing: -0.03em;
 }
 
 .trip-form input[type="text"] {
   flex: 1 1 220px;
-  padding: 14px 20px;
+  padding: 15px 20px;
   border-radius: var(--radius-pill);
   border: 2px solid var(--color-border);
-  background: var(--color-bg);
+  background: #f9fbff;
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: 15px;
+  font-weight: 600;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .trip-form input[type="text"]:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px var(--color-accent-soft);
+  background: #ffffff;
+  box-shadow: 0 0 0 5px var(--color-accent-soft);
 }
 
 .trip-form input[type="text"]:disabled {
@@ -94,22 +100,23 @@ body {
 }
 
 .trip-form button {
-  padding: 14px 30px;
+  padding: 15px 30px;
   border: none;
   border-radius: var(--radius-pill);
-  background: var(--color-accent);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-active));
+  color: #172033;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 800;
   font-size: 15px;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(255, 107, 74, 0.35);
-  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 26px rgba(251, 133, 0, 0.25);
+  transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
 }
 
 .trip-form button:hover:not(:disabled) {
   background: var(--color-accent-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(251, 133, 0, 0.28);
 }
 
 .trip-form button:active:not(:disabled) {
@@ -127,14 +134,14 @@ body {
 .trip-form-status {
   margin: 0;
   color: var(--color-accent-active);
-  font-weight: 600;
+  font-weight: 800;
   font-size: 14px;
 }
 
 .trip-form-error {
   margin: 0;
-  color: #c0392b;
-  font-weight: 600;
+  color: #d94b4b;
+  font-weight: 800;
   font-size: 14px;
 }
 
@@ -143,30 +150,33 @@ body {
 .itinerary-text :is(h1, h2, h3, h4) {
   font-family: var(--font-display);
   color: var(--color-text);
-  line-height: 1.25;
+  line-height: 1.18;
+  letter-spacing: -0.04em;
 }
 
 .itinerary-text h1 {
-  font-size: 1.9rem;
+  font-size: 2rem;
 }
 
 .itinerary-text h2 {
-  font-size: 1.5rem;
+  font-size: 1.55rem;
 }
 
 .itinerary-text h3 {
-  font-size: 1.2rem;
+  font-size: 1.22rem;
 }
 
 .itinerary-text p,
 .itinerary-text li {
   font-family: var(--font-body);
-  line-height: 1.7;
+  line-height: 1.72;
   color: var(--color-text);
 }
 
 .itinerary-text a {
   color: var(--color-accent-active);
+  font-weight: 800;
+  text-underline-offset: 4px;
 }
 
 .itinerary-text strong {
